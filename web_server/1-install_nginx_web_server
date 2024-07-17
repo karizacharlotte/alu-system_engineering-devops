@@ -1,19 +1,22 @@
-sh script to install nginx web server & make the following configurations:
+#!/usr/bin/env bash
+# a Bash script that configures a new Ubuntu machine to respect
+# above requirements (this script will be run on the server itself)
+# bash script to install nginx web server
+#   - Nginx should be listening on port 80
+#   - Return page containing "Holberton School" when queried
 
-sudo apt-get update
-sudo apt-get -y install nginx
+apt-get update
+apt-get install -y nginx
 
-# Create a custom HTML page with the content "Holberton School"
-echo "Holberton School" | sudo tee /var/www/html/index.html > /dev/null
+mkdir /etc/nginx/html
+touch /etc/nginx/html/index.html
+echo "Holberton School" > /etc/nginx/html/index.html
+printf %s "server {
+     listen      80 default_server;
+     listen      [::]:80 default_server;
+     root        /etc/nginx/html;
+     index       index.html index.htm;
+}
+" > /etc/nginx/sites-available/default
 
-# Configure Nginx to listen on port 80
-sudo sed -i 's/80 default_server/80 default_server ipv6only=on/' /etc/nginx/sites-available/default
-
-# Restart Nginx using service (systemctl not used)
-sudo service nginx restart
-
-# Wait for Nginx to restart (add a delay of 2 seconds)
-sleep 2
-
-# Check if Nginx returns the expected content
-curl -s http://localhost | grep "Holberton School"
+service nginx restart
