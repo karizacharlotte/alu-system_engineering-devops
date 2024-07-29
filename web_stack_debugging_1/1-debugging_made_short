@@ -1,5 +1,5 @@
-#!/usr/bin/env bash
-#Script that configures 'nginx' to run on port 80
-sed -i "s/8080/80/g" /etc/nginx/sites-enabled/default
-service nginx restart
-sudo service nginx stop
+#!/bin/bash
+service nginx stop
+curl -s -o /dev/null -w "%{http_code}" http://localhost:80 | grep -q "000"
+service nginx status | grep -q "nginx is not running"
+
